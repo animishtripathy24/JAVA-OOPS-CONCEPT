@@ -1,11 +1,10 @@
 import java.util.*;
-
-class Book {
+class Book{
     private String title;
     private String author;
     private String isbn;
 
-    Book(String title, String author, String isbn) {
+    public Book(String title, String author, String isbn) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
@@ -116,7 +115,7 @@ class Member {
     }
 }
 
-public class Library_Management_System {
+public class Main_new {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
