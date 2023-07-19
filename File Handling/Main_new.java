@@ -66,7 +66,6 @@ class Member {
 
     public void borrowBook(Library library) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("\nAvailable books in the library:");
         library.displayBooks();
 
         System.out.print("Enter the index of the book you want to borrow: ");
@@ -180,7 +179,6 @@ public class Main_new {
                     break;
             }
 
-            System.out.println("\nAvailable books in the library:");
             library.displayBooks();
         }
     }
