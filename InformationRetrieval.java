@@ -162,9 +162,13 @@ public class InformationRetrieval {
             }
             System.out.println("\n");
         }
-        System.out.println("Enter the rows you want to compare :");
-        int r1=sc.nextInt();
-        int r2=sc.nextInt();
+        System.out.println("Enter the strings(in lowercase) you want to compare :");
+        String string1=sc.nextLine();
+        String string2=sc.nextLine();
+        String string3=string1.toLowerCase();
+        String string4=string2.toLowerCase();
+        int r1=mp.get(string3);
+        int r2=mp.get(string4);
         //we have to declare two ArrayList
         if(r1 <= combinedSet.size() && r2 <= combinedSet.size())
         {
@@ -172,8 +176,8 @@ public class InformationRetrieval {
             ArrayList<Integer>a2=new ArrayList<>();
             for(int col=0;col<3;col++)
             {
-                a1.add(mat[r1-1][col]);
-                a2.add(mat[r2-1][col]);
+                a1.add(mat[r1][col]);
+                a2.add(mat[r2][col]);
             }
             // System.out.println(a1.size());
             // System.out.println(a2.size());
