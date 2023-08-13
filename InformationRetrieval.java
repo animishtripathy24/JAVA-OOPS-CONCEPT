@@ -98,11 +98,16 @@ public class InformationRetrieval {
             combinedSet.add(x);
         }
         System.out.println("The individual tokens in the excluding the frequent tokens are :->");
-
-        for(var it:combinedSet)
+        Iterator it=combinedSet.iterator();
+        while (it.hasNext())
         {
-            System.out.print(it+" ");
+            System.out.print(it.next()+" ");
         }
+
+        // for(var it:combinedSet)
+        // {
+        //     System.out.print(it+" ");
+        // }
         Map<String,Integer>mp=new LinkedHashMap<>();
         int n=0;
         for(var x:combinedSet)
