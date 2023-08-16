@@ -1,0 +1,284 @@
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author prati
+ */
+public class SearchEngine 
+{   
+    
+    public static String[] remove(String[] s)
+    {
+		for(int j=0;j<s.length;j++) 
+                {
+			if(s[j].charAt(s[j].length()-1)=='.' || s[j].charAt(s[j].length()-1)==',') {
+				String temp=s[j].substring(0,s[j].length()-1);
+				s[j]=temp;
+		}
+    }
+	return s;
+    }
+
+    public static void displayFile(ArrayList<String> a)
+    {
+		for(int i=0;i<a.size();i++)
+                {
+                    System.out.println(a.get(i));
+                }
+                System.out.println("----------------------------------");
+    } 
+    
+   
+     
+    public  ArrayList<String> readFile(String str, ArrayList<String> sw  ,ArrayList<String> cl) throws IOException
+    {
+       
+            FileInputStream f = new FileInputStream(str);
+            StringBuffer sb= new StringBuffer("");
+            int i=0;
+            while((i=f.read())!=-1)
+            {
+                    sb.append((char)i);
+            }
+            String s= sb.toString();
+            String[] st=s.split(" ");
+            String t[]=remove(st);
+            ArrayList<String> arr1=new ArrayList<String>();
+            SearchEngine s1= new SearchEngine();
+            for(String x:st)
+            {
+                   if(!sw.contains(x) && !arr1.contains(x)) 
+                   {
+                      
+                       arr1.add(x);
+                   }
+                   
+                   if(!sw.contains(x) && !cl.contains(x)) 
+                   {
+                      
+                       cl.add(x);
+                   }
+            }
+        return arr1;
+    }   
+    
+    public ArrayList<String> prepareSW(String str) throws IOException
+    {
+          
+            FileInputStream f = new FileInputStream(str);
+            StringBuffer sb= new StringBuffer("");
+            int i=0;
+            while((i=f.read())!=-1)
+            {
+                    sb.append((char)i);
+            }
+            String s= sb.toString();
+            String[] st=s.split(" ");
+            String t[]=remove(st);
+            ArrayList<String> sw=new ArrayList<String>();
+            for(String x:st)
+            {
+                    sw.add(x);
+            }
+            
+            return sw;
+    }
+    public static void main(String args[]) throws IOException
+    {
+        Scanner sc=new Scanner(System.in);
+        SearchEngine se= new SearchEngine();
+        ArrayList<String> sw=se.prepareSW("C:\\Users\\prati\\Desktop\\Sw.txt");
+        System.out.println("The StopWord List is:");
+        se.displayFile(sw);
+        ArrayList<String> cl=new ArrayList<String>(); 
+        
+        
+        ArrayList<String> a1=se.readFile("C:\\Users\\prati\\Desktop\\Doc1.txt",sw,cl);
+        ArrayList<String> a2=se.readFile("C:\\Users\\prati\\Desktop\\Doc2.txt",sw,cl);
+        ArrayList<String> a3=se.readFile("C:\\Users\\prati\\Desktop\\Doc3.txt",sw,cl);
+        ArrayList<String> a4=se.readFile("C:\\Users\\prati\\Desktop\\Doc4.txt",sw,cl);
+        ArrayList<String> a5=se.readFile("C:\\Users\\prati\\Desktop\\Doc5.txt",sw,cl);
+        
+        
+        
+         
+//        se.displayFile(a1);
+//        se.displayFile(a2);
+//        se.displayFile(a3);
+//        se.displayFile(a4);
+//        se.displayFile(a5);
+        System.out.println("The unique tokens except stop words:");
+        se.displayFile(cl);
+        
+        ArrayList<Integer> r=new ArrayList<Integer>();
+        
+        for(String s:cl)
+        {   //doc1 check
+            if(a1.contains(s))
+            {
+                r.add(1);
+            }
+            else
+            {
+                r.add(0);
+            }
+            
+            //doc2 check
+            if(a2.contains(s))
+            {
+                r.add(1);
+            }
+            else
+            {
+                r.add(0);
+            }
+            
+            //doc3 check
+            if(a3.contains(s))
+            {
+                r.add(1);
+            }
+            else
+            {
+                r.add(0);
+            }
+            
+            //doc4 check
+            if(a4.contains(s))
+            {
+                r.add(1);
+            }
+            else
+            {
+                r.add(0);
+            }
+            
+            //doc5 check
+            if(a5.contains(s))
+            {
+                r.add(1);
+            }
+            else
+            {
+                r.add(0);
+            }  
+        }
+        
+        int[][]  im=new int[cl.size()][5];
+        int count=0;
+        for(int i=0;i<cl.size();i++)
+        {
+            for(int j=0;j<5;j++)
+            {
+                im[i][j]=r.get(count);
+                count++;
+            }
+        }
+      System.out.println("Incidence Matrix:");
+        System.out.print("\t\t\t d1 d2 d3 d4 d5\n");
+        for(int i=0;i<cl.size();i++)
+        {   
+            System.out.print(cl.get(i));
+            for(int k=0;k<25-cl.get(i).length();k++)
+                
+            System.out.print(" ");
+            for(int j=0;j<5;j++)
+            {
+                System.out.print(im[i][j]+"  ");
+            }
+            System.out.println("");
+        }
+    System.out.println("\n\nEnter the query");
+    String q1=sc.next();
+    String q2=sc.next();
+        System.out.println("Enter\n 1 for AND operation \n 2 for OR operation \n 3 for NOT");
+        int ch=sc.nextInt();
+    ArrayList<Integer> r1=new ArrayList<>();
+    ArrayList<Integer> r2=new ArrayList<>();
+   
+    int i1=cl.indexOf(q1);
+    int i2=cl.indexOf(q2);
+    for(int i=0;i<im[0].length;i++)
+    {
+        if(i1!=-1 && i2!=-1){
+        r1.add(im[i1][i]);
+        r2.add(im[i2][i]);
+        }
+    }
+    
+    ArrayList<Integer> res=operation(ch,im,r1,r2);
+    
+    boolean flag=false;    
+    System.out.print("Document ");
+    for(int k=0;k<im[0].length;k++){
+        if(res.get(k)==1){
+            flag=true;
+            System.out.print((k+1)+" ");
+        }
+    }
+    if(!flag)
+    {
+        System.out.println("does not have the given query");
+    }
+    
+}
+
+    
+    public static ArrayList<Integer> operation(int ch,int[][] im,ArrayList<Integer> r1,ArrayList<Integer> r2){
+        Scanner sc=new Scanner(System.in);
+        ArrayList<Integer> res=new ArrayList<>();
+        if(ch==1)
+        {
+            for(int j=0;j<im[0].length;j++){
+            res.add(r1.get(j) & r2.get(j));
+            }
+        }
+        else
+            if(ch==2){
+                for(int j=0;j<im[0].length;j++){
+            res.add(r1.get(j) | r2.get(j));
+            }   
+            }
+        else
+            if(ch==3){
+                System.out.println("Which string has NOT?\n 1st or 2nd?");
+                int ci=sc.nextInt();
+                if(ci==1)
+                {
+                for(int j=0;j<im[0].length;j++)
+                {  
+                int chng=r1.get(j);
+                res.add(~chng & r2.get(j));
+                }   
+            }
+                else
+                    if(ci==2){
+                        for(int j=0;j<im[0].length;j++){
+            res.add(r1.get(j) & ~(r2.get(j)));
+                    }
+                    }
+                    else
+                    {
+                        System.out.println("Invalid choice");
+                    }
+            }
+            else{
+                System.out.println("Invalid choice");
+            } 
+        return res;
+    }
+}
+    
+

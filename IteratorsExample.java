@@ -20,7 +20,7 @@ public class IteratorsExample {
         {
             System.out.println(it.next());
         }
-
+        sc.close();
     }
     
 

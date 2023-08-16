@@ -12,11 +12,9 @@ public class InformationRetrieval {
 		}
 		return s;
 	}
-    public static void main(String[] args) throws IOException
+    public Set<String> readFile(String str) throws IOException
     {
-        Scanner sc=new Scanner(System.in);
-        // InformationRetrieval ir=new InformationRetrieval();
-        FileInputStream f=new FileInputStream("doc1.txt");
+        FileInputStream f=new FileInputStream(str);
         StringBuffer sb1= new StringBuffer("");
         int i=0;
         while((i=f.read()) != -1)
@@ -26,76 +24,69 @@ public class InformationRetrieval {
         String str1=sb1.toString();
         String[] arr1=str1.split(" ");
         String[] newarr1=remove(arr1);
-        Set<String>s1=new LinkedHashSet<>();
+        Set<String>s=new LinkedHashSet<>();
         for(var x:newarr1)
         {
-            s1.add(x);
+            s.add(x);
         }
+        f.close();
+        return s;
+    }
+    public static void main(String[] args) throws IOException
+    {
+        Scanner sc=new Scanner(System.in);
+        InformationRetrieval ir=new InformationRetrieval();
+        Set<String>s1=ir.readFile("doc1.txt");
         System.out.println("\n"+"The contents of doc1 is:");
         for(var x:s1)
         {
             System.out.print(x+" ");
         }
         System.out.println("\n\n");
-        f.close();
-        FileInputStream g=new FileInputStream("doc2.txt");
-        StringBuffer sb2= new StringBuffer("");
-        int j=0;
-        while((j=g.read()) != -1)
-        {
-            sb2.append((char)j);
-        }
-        String str2=sb2.toString();
-        String[] arr2=str2.split(" ");
-        String[] newarr2=remove(arr2);
-        Set<String>s2=new LinkedHashSet<>();
-        for(var x:newarr2)
-        {
-            s2.add(x);
-        }
+        Set<String>s2=ir.readFile("doc2.txt");
         System.out.println("The contents of doc2 is:");
         for(var x:s2)
         {
             System.out.print(x+" ");
         }
         System.out.println("\n\n");
-        g.close();
-        FileInputStream h=new FileInputStream("doc3.txt");
-        StringBuffer sb3= new StringBuffer("");
-        int k=0;
-        while((k=h.read()) != -1)
-        {
-            sb3.append((char)k);
-        }
-        String str3=sb3.toString();
-        String[] arr3=str3.split(" ");
-        String[] newarr3=remove(arr3);
-        Set<String>s3=new LinkedHashSet<>();
-        for(var x:newarr3)
-        {
-            s3.add(x);
-        }
+        Set<String>s3=ir.readFile("doc3.txt");
         System.out.println("The contents of doc3 is:");
         for(var x:s3)
         {
             System.out.print(x+" ");
         }
         System.out.println("\n\n");
-        h.close();
-
         //creating a combined set
+        Set<String>stockWord=ir.readFile("stockWord.txt");
+        System.out.println("The list of Stock Words are:");
+        for(var x:stockWord)
+        {
+            System.out.print(x+" ");
+        }
+        System.out.println("\n\n");
+        //to preserve order of insertion
         Set<String> combinedSet=new LinkedHashSet<>();
         for(var x:s1)
         {
-            combinedSet.add(x);
+            if(!stockWord.contains(x))
+            {
+                combinedSet.add(x);
+            }
         }
         for(var x:s2)
         {
-            combinedSet.add(x);
+            if(!stockWord.contains(x))
+            {
+                combinedSet.add(x);
+            }
         }
         for(var x:s3)
         {
-            combinedSet.add(x);
+            if(!stockWord.contains(x))
+            {
+                combinedSet.add(x);
+            }
         }
         System.out.println("The individual tokens in the excluding the frequent tokens are :->");
         Iterator it=combinedSet.iterator();
@@ -103,11 +94,6 @@ public class InformationRetrieval {
         {
             System.out.print(it.next()+" ");
         }
-
-        // for(var it:combinedSet)
-        // {
-        //     System.out.print(it+" ");
-        // }
         Map<String,Integer>mp=new LinkedHashMap<>();
         int n=0;
         for(var x:combinedSet)
@@ -116,13 +102,9 @@ public class InformationRetrieval {
             n=n+1;
         }
         System.out.println("\n");
-        for(var x:mp.entrySet())
-        {
-            System.out.println(x.getKey()+" -> "+x.getValue());
-        }
-
         //now we create a two dimensional incidence matrix
         int[][] mat=new int[combinedSet.size()][3];
+        //at first we initialize all the rows with zeroes
         for(int row=0;row<combinedSet.size();row++)
         {
             for(int col=0;col<3;col++)
@@ -130,23 +112,11 @@ public class InformationRetrieval {
                 mat[row][col]=0;
             }
         }
-        //display
-        // for(int row=0;row<combinedSet.size();row++)
-        // {
-        //     for(int col=0;col<3;col++)
-        //     {
-        //         System.out.print(mat[row][col]+" ");
-        //     }
-        //     System.out.println("\n");
-        // }
         for(var x:combinedSet)
         {
             if(s1.contains(x))
             {
-                if(mp.containsKey(x))
-                {
-                    mat[mp.get(x)][0]=1;
-                }
+                mat[mp.get(x)][0]=1;
             }
             if(s2.contains(x))
             {
@@ -156,24 +126,27 @@ public class InformationRetrieval {
             {
                 mat[mp.get(x)][2]=1;
             }
-
         }
+        List<String> cs=new ArrayList<>(combinedSet);
         System.out.println("\n"+"The term incidence matrix is:");
+        System.out.print("\t\t\t d1 d2 d3\n");
         for(int row=0;row<combinedSet.size();row++)
         {
+            System.out.print(cs.get(row));
+            for(int k=0;k<25-cs.get(row).length();k++)
+                
+            System.out.print(" ");
             for(int col=0;col<3;col++)
             {
-                System.out.print(mat[row][col]+" ");
+                System.out.print(mat[row][col]+"  ");
             }
             System.out.println("\n");
         }
         System.out.println("Enter the strings(in lowercase) you want to compare :");
         String string1=sc.nextLine();
         String string2=sc.nextLine();
-        String string3=string1.toLowerCase();
-        String string4=string2.toLowerCase();
-        int r1=mp.get(string3);
-        int r2=mp.get(string4);
+        int r1=mp.get(string1);
+        int r2=mp.get(string2);
         //we have to declare two ArrayList
         if(r1 <= combinedSet.size() && r2 <= combinedSet.size())
         {
@@ -184,16 +157,6 @@ public class InformationRetrieval {
                 a1.add(mat[r1][col]);
                 a2.add(mat[r2][col]);
             }
-            // System.out.println(a1.size());
-            // System.out.println(a2.size());
-            // for(int index=0;index<a1.size();index++)
-            // {
-            //     System.out.print(a1.get(index)+" ");
-            // }
-            // for(var x:a2)
-            // {
-            //     System.out.print(x+" ");
-            // }
             System.out.println("Which operation you want to perform :");
             System.out.println("Enter 1->AND Operation 2->OR Operation 3->NOT Operation");
             int choice = sc.nextInt();
@@ -202,9 +165,7 @@ public class InformationRetrieval {
                 ArrayList<Integer>res=new ArrayList<>();
                 for(int loop=0;loop<a1.size();loop++)
                 {
-                    int n1=a1.get(loop);
-                    int n2=a2.get(loop);
-                    res.add(n1 & n2);
+                    res.add(a1.get(loop) & a2.get(loop));
                 }
                 System.out.println("The final list obtained after doing AND Operation->");
                 for(int ind=0;ind<res.size();ind++)
@@ -232,9 +193,7 @@ public class InformationRetrieval {
                 ArrayList<Integer>res=new ArrayList<>();
                 for(int loop=0;loop<a1.size();loop++)
                 {
-                    int n1=a1.get(loop);
-                    int n2=a2.get(loop);
-                    res.add(n1 | n2);
+                    res.add(a1.get(loop) | a2.get(loop));
                 }
                 System.out.println("The final list obtained after doing OR Operation->");
                 for(int ind=0;ind<res.size();ind++)
@@ -266,10 +225,7 @@ public class InformationRetrieval {
                     ArrayList<Integer>res=new ArrayList<>();
                     for(int loop=0;loop<a1.size();loop++)
                     {
-                        int n1=a1.get(loop);
-                        int n2=a2.get(loop);
-                        n1=~n1;
-                        res.add(n1 & n2);
+                        res.add(~a1.get(loop) & a2.get(loop));
                     }
                     System.out.println("The final list obtained after doing NOT Operation->");
                     for(int ind=0;ind<res.size();ind++)
@@ -297,10 +253,7 @@ public class InformationRetrieval {
                     ArrayList<Integer>res=new ArrayList<>();
                     for(int loop=0;loop<a1.size();loop++)
                     {
-                        int n1=a1.get(loop);
-                        int n2=a2.get(loop);
-                        n2=~n2;
-                        res.add(n1 & n2);
+                        res.add(a1.get(loop) & ~a2.get(loop));
                     }
                     System.out.println("The final list obtained after doing NOT Operation->");
                     for(int ind=0;ind<res.size();ind++)
