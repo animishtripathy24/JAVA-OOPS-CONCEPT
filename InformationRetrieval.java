@@ -37,24 +37,38 @@ public class InformationRetrieval {
         Scanner sc=new Scanner(System.in);
         InformationRetrieval ir=new InformationRetrieval();
         Set<String>s1=ir.readFile("doc1.txt");
-        System.out.println("\n"+"The contents of doc1 is:");
+        System.out.println("\n"+"The individual tokens of document 1 is:");
         for(var x:s1)
         {
-            System.out.print(x+" ");
+            System.out.println(x);
         }
         System.out.println("\n\n");
         Set<String>s2=ir.readFile("doc2.txt");
-        System.out.println("The contents of doc2 is:");
+        System.out.println("\n"+"The individual tokens of document 2 is:");
         for(var x:s2)
         {
-            System.out.print(x+" ");
+            System.out.println(x);
         }
         System.out.println("\n\n");
         Set<String>s3=ir.readFile("doc3.txt");
-        System.out.println("The contents of doc3 is:");
+        System.out.println("\n"+"The individual tokens of document 3 is:");
         for(var x:s3)
         {
-            System.out.print(x+" ");
+            System.out.println(x);
+        }
+        System.out.println("\n\n");
+        Set<String>s4=ir.readFile("doc4.txt");
+        System.out.println("\n"+"The individual tokens of document 4 is:");
+        for(var x:s4)
+        {
+            System.out.println(x);
+        }
+        System.out.println("\n\n");
+        Set<String>s5=ir.readFile("doc5.txt");
+        System.out.println("\n"+"The individual tokens of document 5 is:");
+        for(var x:s5)
+        {
+            System.out.println(x);
         }
         System.out.println("\n\n");
         //creating a combined set
@@ -62,7 +76,7 @@ public class InformationRetrieval {
         System.out.println("The list of Stock Words are:");
         for(var x:stockWord)
         {
-            System.out.print(x+" ");
+            System.out.println(x);
         }
         System.out.println("\n\n");
         //to preserve order of insertion
@@ -88,11 +102,25 @@ public class InformationRetrieval {
                 combinedSet.add(x);
             }
         }
-        System.out.println("The individual tokens in the excluding the frequent tokens are :->");
+        for(var x:s4)
+        {
+            if(!stockWord.contains(x))
+            {
+                combinedSet.add(x);
+            }
+        }
+        for(var x:s5)
+        {
+            if(!stockWord.contains(x))
+            {
+                combinedSet.add(x);
+            }
+        }
+        System.out.println("The unique tokens except stop words:");
         Iterator it=combinedSet.iterator();
         while (it.hasNext())
         {
-            System.out.print(it.next()+" ");
+            System.out.println(it.next()+" ");
         }
         Map<String,Integer>mp=new LinkedHashMap<>();
         int n=0;
@@ -103,11 +131,11 @@ public class InformationRetrieval {
         }
         System.out.println("\n");
         //now we create a two dimensional incidence matrix
-        int[][] mat=new int[combinedSet.size()][3];
+        int[][] mat=new int[combinedSet.size()][5];
         //at first we initialize all the rows with zeroes
         for(int row=0;row<combinedSet.size();row++)
         {
-            for(int col=0;col<3;col++)
+            for(int col=0;col<5;col++)
             {
                 mat[row][col]=0;
             }
@@ -126,17 +154,25 @@ public class InformationRetrieval {
             {
                 mat[mp.get(x)][2]=1;
             }
+            if(s4.contains(x))
+            {
+                mat[mp.get(x)][3]=1;
+            }
+            if(s5.contains(x))
+            {
+                mat[mp.get(x)][4]=1;
+            }
         }
         List<String> cs=new ArrayList<>(combinedSet);
         System.out.println("\n"+"The term incidence matrix is:");
-        System.out.print("\t\t\t d1 d2 d3\n");
+        System.out.print("\t\t    d1 d2 d3 d4 d5\n");
         for(int row=0;row<combinedSet.size();row++)
         {
             System.out.print(cs.get(row));
-            for(int k=0;k<25-cs.get(row).length();k++)
+            for(int k=0;k<20-cs.get(row).length();k++)
                 
             System.out.print(" ");
-            for(int col=0;col<3;col++)
+            for(int col=0;col<5;col++)
             {
                 System.out.print(mat[row][col]+"  ");
             }
@@ -152,7 +188,7 @@ public class InformationRetrieval {
         {
             ArrayList<Integer>a1=new ArrayList<>();
             ArrayList<Integer>a2=new ArrayList<>();
-            for(int col=0;col<3;col++)
+            for(int col=0;col<5;col++)
             {
                 a1.add(mat[r1][col]);
                 a2.add(mat[r2][col]);
